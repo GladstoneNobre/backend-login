@@ -34,7 +34,7 @@ app.post('/cadastro', (req, res) => {
     if (err) {
       return res.status(500).json(err);
     }
-    res.json({mensagem"Cadastro concluído com sucesso!"});
+    res.json({mensagem:"Cadastro concluído com sucesso!"});
   });
 });
 
