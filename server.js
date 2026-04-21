@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: ["https://pagina-de-login-ruddy.vercel.app"]
+origin: "https://pagina-de-login-ruddy.vercel.app/"
 }));
 
 // 🔗 CONEXÃO COM SEU BANCO (Railway)
