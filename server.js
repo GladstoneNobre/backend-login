@@ -10,11 +10,11 @@ origin: "https://pagina-de-login-ruddy.vercel.app/"
 
 // 🔗 CONEXÃO COM SEU BANCO (Railway)
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME
+  host: process.env.DB_HOST || "gondola.proxy.rlwy.net",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "aUwiCcxHOYuqLtGyijPFqhwvNrNOgTLG",
+  port: process.env.DB_PORT || "15527",
+  database: process.env.DB_NAME || "railway"
 });
 
 // TESTE DE CONEXÃO
