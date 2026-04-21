@@ -4,8 +4,9 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+
 app.use(cors({
-origin: "https://pagina-de-login-ruddy.vercel.app/"
+  origin: "https://pagina-de-login-ruddy.vercel.app"
 }));
 
 // 🔗 CONEXÃO COM SEU BANCO (Railway)
@@ -31,12 +32,14 @@ app.post('/cadastro', (req, res) => {
   const { nome, email, senha } = req.body;
 
   const sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-  
+
   db.query(sql, [nome, email, senha], (err, result) => {
     if (err) {
-      return res.status(500).json(err);
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
     }
-    res.json({mensagem:"Cadastro concluído com sucesso!"});
+
+    res.json({ mensagem: "Cadastro concluído com sucesso!" });
   });
 });
 
@@ -45,9 +48,12 @@ app.post('/login', (req, res) => {
   const { email, senha } = req.body;
 
   const sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
-  
+
   db.query(sql, [email, senha], (err, result) => {
-    if (err) return res.status(500).json(err);
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
 
     if (result.length > 0) {
       res.json("Login OK");
