@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express();
+
 app.use(express.json());
 
 app.use(cors({
@@ -19,13 +20,13 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
   if (err) {
-    console.error('Erro ao conectar:', err);
+    console.error("Erro ao conectar:", err);
   } else {
-    console.log('Conectado ao banco 🚀');
+    console.log("Conectado ao banco 🚀");
   }
 });
 
-// CADASTRO DA TELA cadastro.html
+// CADASTRO
 app.post('/cadastro', (req, res) => {
   const { nome, email, senha } = req.body;
 
@@ -50,18 +51,18 @@ app.post('/login', (req, res) => {
   db.query(sql, [email, senha], (err, result) => {
     if (err) {
       console.error("ERRO SQL:", err);
-      return res.status(500).json({ erro: err.message });
+      return res.status(500).send("Erro no servidor");
     }
 
     if (result.length > 0) {
-      res.json("Login OK");
+      res.send("Login OK");
     } else {
-      res.status(401).json("Email ou senha inválidos");
+      res.status(401).send("Email ou senha inválidos");
     }
   });
 });
 
-// CRUD DE USUÁRIOS
+// LISTAR USUÁRIOS
 app.get('/usuarios', (req, res) => {
   const sql = "SELECT id, nome, email, perfil FROM usuarios";
 
@@ -75,12 +76,13 @@ app.get('/usuarios', (req, res) => {
   });
 });
 
+// INCLUIR USUÁRIO
 app.post('/usuarios', (req, res) => {
   const { nome, email, senha, perfil } = req.body;
 
   const sql = "INSERT INTO usuarios (nome, email, senha, perfil) VALUES (?, ?, ?, ?)";
 
-  db.query(sql, [nome, email, senha, perfil], (err) => {
+  db.query(sql, [nome, email, senha, perfil || "Usuário"], (err) => {
     if (err) {
       console.error("ERRO SQL:", err);
       return res.status(500).json({ erro: err.message });
@@ -90,6 +92,7 @@ app.post('/usuarios', (req, res) => {
   });
 });
 
+// EDITAR USUÁRIO
 app.put('/usuarios/:id', (req, res) => {
   const { id } = req.params;
   const { nome, email, senha, perfil } = req.body;
@@ -106,6 +109,7 @@ app.put('/usuarios/:id', (req, res) => {
   });
 });
 
+// EXCLUIR USUÁRIO
 app.delete('/usuarios/:id', (req, res) => {
   const { id } = req.params;
 
