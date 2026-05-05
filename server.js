@@ -9,7 +9,6 @@ app.use(cors({
   origin: "https://pagina-de-login-ruddy.vercel.app"
 }));
 
-// 🔗 CONEXÃO COM SEU BANCO (Railway)
 const db = mysql.createConnection({
   host: process.env.DB_HOST || "gondola.proxy.rlwy.net",
   user: process.env.DB_USER || "root",
@@ -18,7 +17,6 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME || "railway"
 });
 
-// TESTE DE CONEXÃO
 db.connect((err) => {
   if (err) {
     console.error('Erro ao conectar:', err);
@@ -27,13 +25,13 @@ db.connect((err) => {
   }
 });
 
-// 📌 ROTA DE CADASTRO
+// CADASTRO DA TELA cadastro.html
 app.post('/cadastro', (req, res) => {
   const { nome, email, senha } = req.body;
 
-  const sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
+  const sql = "INSERT INTO usuarios (nome, email, senha, perfil) VALUES (?, ?, ?, ?)";
 
-  db.query(sql, [nome, email, senha], (err, result) => {
+  db.query(sql, [nome, email, senha, "Usuário"], (err) => {
     if (err) {
       console.error("ERRO SQL:", err);
       return res.status(500).json({ erro: err.message });
@@ -43,7 +41,7 @@ app.post('/cadastro', (req, res) => {
   });
 });
 
-// 📌 ROTA DE LOGIN
+// LOGIN
 app.post('/login', (req, res) => {
   const { email, senha } = req.body;
 
@@ -60,6 +58,66 @@ app.post('/login', (req, res) => {
     } else {
       res.status(401).json("Email ou senha inválidos");
     }
+  });
+});
+
+// CRUD DE USUÁRIOS
+app.get('/usuarios', (req, res) => {
+  const sql = "SELECT id, nome, email, perfil FROM usuarios";
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json(result);
+  });
+});
+
+app.post('/usuarios', (req, res) => {
+  const { nome, email, senha, perfil } = req.body;
+
+  const sql = "INSERT INTO usuarios (nome, email, senha, perfil) VALUES (?, ?, ?, ?)";
+
+  db.query(sql, [nome, email, senha, perfil], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Usuário cadastrado com sucesso" });
+  });
+});
+
+app.put('/usuarios/:id', (req, res) => {
+  const { id } = req.params;
+  const { nome, email, senha, perfil } = req.body;
+
+  const sql = "UPDATE usuarios SET nome = ?, email = ?, senha = ?, perfil = ? WHERE id = ?";
+
+  db.query(sql, [nome, email, senha, perfil, id], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Usuário atualizado com sucesso" });
+  });
+});
+
+app.delete('/usuarios/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM usuarios WHERE id = ?";
+
+  db.query(sql, [id], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Usuário excluído com sucesso" });
   });
 });
 
