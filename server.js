@@ -63,8 +63,9 @@ app.post('/login', (req, res) => {
 });
 
 // LISTAR USUÁRIOS
+// LISTAR USUÁRIOS DO CRUD
 app.get('/usuarios', (req, res) => {
-  const sql = "SELECT id, nome, email, perfil FROM usuarios";
+  const sql = "SELECT id, nome, email, perfil FROM usuarios_sistema";
 
   db.query(sql, (err, result) => {
     if (err) {
@@ -76,6 +77,54 @@ app.get('/usuarios', (req, res) => {
   });
 });
 
+// INCLUIR USUÁRIO NO CRUD
+app.post('/usuarios', (req, res) => {
+  const { nome, email, senha, perfil } = req.body;
+
+  const sql = "INSERT INTO usuarios_sistema (nome, email, senha, perfil) VALUES (?, ?, ?, ?)";
+
+  db.query(sql, [nome, email, senha, perfil || "Usuário"], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Usuário cadastrado com sucesso" });
+  });
+});
+
+// EDITAR USUÁRIO DO CRUD
+app.put('/usuarios/:id', (req, res) => {
+  const { id } = req.params;
+  const { nome, email, senha, perfil } = req.body;
+
+  const sql = "UPDATE usuarios_sistema SET nome = ?, email = ?, senha = ?, perfil = ? WHERE id = ?";
+
+  db.query(sql, [nome, email, senha, perfil, id], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Usuário atualizado com sucesso" });
+  });
+});
+
+// EXCLUIR USUÁRIO DO CRUD
+app.delete('/usuarios/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM usuarios_sistema WHERE id = ?";
+
+  db.query(sql, [id], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Usuário excluído com sucesso" });
+  });
+});
 // INCLUIR USUÁRIO
 app.post('/usuarios', (req, res) => {
   const { nome, email, senha, perfil } = req.body;
