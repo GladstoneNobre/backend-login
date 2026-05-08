@@ -173,7 +173,51 @@ app.delete('/usuarios/:id', (req, res) => {
     res.json({ mensagem: "Usuário excluído com sucesso" });
   });
 });
+// LISTAR FORNECEDORES
+app.get('/fornecedores', (req, res) => {
+  const sql = "SELECT * FROM fornecedores";
 
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json(result);
+  });
+});
+
+// CADASTRAR FORNECEDOR
+app.post('/fornecedores', (req, res) => {
+  const { marca, cnpj, telefone, categoria } = req.body;
+
+  const sql = "INSERT INTO fornecedores (marca, cnpj, telefone, categoria) VALUES (?, ?, ?, ?)";
+
+  db.query(sql, [marca, cnpj, telefone, categoria], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Fornecedor cadastrado com sucesso" });
+  });
+});
+
+// EXCLUIR FORNECEDOR
+app.delete('/fornecedores/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM fornecedores WHERE id = ?";
+
+  db.query(sql, [id], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Fornecedor excluído com sucesso" });
+  });
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
