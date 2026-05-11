@@ -220,7 +220,17 @@ app.delete('/fornecedores/:id', (req, res) => {
 });
 // LISTAR CONTAS A PAGAR
 app.get('/contas-pagar', (req, res) => {
-  const sql = "SELECT * FROM tbContasPagar";
+  const sql = `
+    SELECT 
+      c.*,
+      u.nome AS funcionario_nome,
+      f.marca AS fornecedor_nome
+    FROM tbContasPagar c
+    LEFT JOIN usuarios_sistema u 
+      ON c.funcionario_id = u.id
+    LEFT JOIN fornecedores f
+      ON c.fornecedor_id = f.id
+  `;
 
   db.query(sql, (err, result) => {
     if (err) {
