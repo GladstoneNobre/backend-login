@@ -348,6 +348,18 @@ app.delete('/contas-pagar/:id', (req, res) => {
     res.json({ mensagem: "Conta excluída com sucesso" });
   });
 });
+app.get('/pessoas', (req, res) => {
+  const sql = "SELECT pessoa_id, nome FROM tbPessoas";
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json(result);
+  });
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
