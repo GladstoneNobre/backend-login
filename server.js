@@ -358,17 +358,21 @@ app.delete('/contas-pagar/:id', (req, res) => {
     res.json({ mensagem: "Conta excluída com sucesso" });
   });
 });
-app.get('/pessoas', (req, res) => {
-  const sql = "SELECT id AS pessoa_id, nome FROM usuarios_sistema";
+app.get('/funcionarios', (req, res) => {
+
+  const sql = "SELECT id, nome FROM usuarios_sistema";
 
   db.query(sql, (err, result) => {
+
     if (err) {
       console.error("ERRO SQL:", err);
       return res.status(500).json({ erro: err.message });
     }
 
     res.json(result);
+
   });
+
 });
 app.get('/fornecedores-lista', (req, res) => {
   const sql = "SELECT id, marca FROM fornecedores";
