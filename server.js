@@ -386,6 +386,26 @@ app.get('/fornecedores-lista', (req, res) => {
     res.json(result);
   });
 });
+// EDITAR FORNECEDOR
+app.put('/fornecedores/:id', (req, res) => {
+  const { id } = req.params;
+  const { marca, cnpj, telefone, categoria } = req.body;
+
+  const sql = `
+    UPDATE fornecedores 
+    SET marca = ?, cnpj = ?, telefone = ?, categoria = ?
+    WHERE id = ?
+  `;
+
+  db.query(sql, [marca, cnpj, telefone, categoria, id], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Fornecedor atualizado com sucesso" });
+  });
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
