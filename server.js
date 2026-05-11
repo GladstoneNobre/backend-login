@@ -349,7 +349,7 @@ app.delete('/contas-pagar/:id', (req, res) => {
   });
 });
 app.get('/pessoas', (req, res) => {
-  const sql = "SELECT pessoa_id, nome FROM tbPessoas";
+  const sql = "SELECT id AS pessoa_id, nome FROM usuarios_sistema";
 
   db.query(sql, (err, result) => {
     if (err) {
