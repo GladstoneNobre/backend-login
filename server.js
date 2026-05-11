@@ -218,6 +218,136 @@ app.delete('/fornecedores/:id', (req, res) => {
     res.json({ mensagem: "Fornecedor excluído com sucesso" });
   });
 });
+// LISTAR CONTAS A PAGAR
+app.get('/contas-pagar', (req, res) => {
+  const sql = "SELECT * FROM tbContasPagar";
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json(result);
+  });
+});
+
+// INCLUIR CONTA A PAGAR
+app.post('/contas-pagar', (req, res) => {
+  const {
+    valor,
+    data_vencimento,
+    data_pagamento,
+    tipo_titulo_id,
+    atualizado_por,
+    atualizado_em,
+    emprestimo_id,
+    funcionario_id,
+    cliente_id,
+    viagem_id,
+    fornecedor_id
+  } = req.body;
+
+  const sql = `
+    INSERT INTO tbContasPagar
+    (valor, data_vencimento, data_pagamento, tipo_titulo_id, atualizado_por, atualizado_em, emprestimo_id, funcionario_id, cliente_id, viagem_id, fornecedor_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(sql, [
+    valor || null,
+    data_vencimento || null,
+    data_pagamento || null,
+    tipo_titulo_id || null,
+    atualizado_por || null,
+    atualizado_em || null,
+    emprestimo_id || null,
+    funcionario_id || null,
+    cliente_id || null,
+    viagem_id || null,
+    fornecedor_id || null
+  ], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Conta cadastrada com sucesso" });
+  });
+});
+
+// EDITAR CONTA A PAGAR
+app.put('/contas-pagar/:id', (req, res) => {
+  const { id } = req.params;
+
+  const {
+    valor,
+    data_vencimento,
+    data_pagamento,
+    tipo_titulo_id,
+    atualizado_por,
+    atualizado_em,
+    emprestimo_id,
+    funcionario_id,
+    cliente_id,
+    viagem_id,
+    fornecedor_id
+  } = req.body;
+
+  const sql = `
+    UPDATE tbContasPagar SET
+      valor = ?,
+      data_vencimento = ?,
+      data_pagamento = ?,
+      tipo_titulo_id = ?,
+      atualizado_por = ?,
+      atualizado_em = ?,
+      emprestimo_id = ?,
+      funcionario_id = ?,
+      cliente_id = ?,
+      viagem_id = ?,
+      fornecedor_id = ?
+    WHERE conta_pagar_id = ?
+  `;
+
+  db.query(sql, [
+    valor || null,
+    data_vencimento || null,
+    data_pagamento || null,
+    tipo_titulo_id || null,
+    atualizado_por || null,
+    atualizado_em || null,
+    emprestimo_id || null,
+    funcionario_id || null,
+    cliente_id || null,
+    viagem_id || null,
+    fornecedor_id || null,
+    id
+  ], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Conta atualizada com sucesso" });
+  });
+});
+
+// EXCLUIR CONTA A PAGAR
+app.delete('/contas-pagar/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM tbContasPagar WHERE conta_pagar_id = ?";
+
+  db.query(sql, [id], (err) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json({ mensagem: "Conta excluída com sucesso" });
+  });
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
