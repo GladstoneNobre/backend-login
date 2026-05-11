@@ -370,6 +370,18 @@ app.get('/pessoas', (req, res) => {
     res.json(result);
   });
 });
+app.get('/fornecedores-lista', (req, res) => {
+  const sql = "SELECT id, marca FROM fornecedores";
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("ERRO SQL:", err);
+      return res.status(500).json({ erro: err.message });
+    }
+
+    res.json(result);
+  });
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
